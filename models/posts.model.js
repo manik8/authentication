@@ -7,8 +7,16 @@ const PostSchema = new Schema({
     url: String,
     category: String,
     likes: Number,
-    date: Date,
-    comments: [Object]
+    date: {
+        type: Date,
+        default: Date(),
+    },
+    comments: [
+        {
+            user: String,
+            message: String,
+        },
+    ],
 });
 
 module.exports = model("posts", PostSchema);
