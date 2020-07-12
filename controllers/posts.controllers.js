@@ -56,3 +56,47 @@ exports.updatePost = (req, res) => {
         return res.json(post);
         });
 }
+
+exports.getPostCount = (req, res) => {
+    Posts.aggregate([ { $match: { author: "Tim"}},{ $group: { _id: '$author', numOfPost: { $sum: 1 }}}]).exec((err, post) => {
+        if(err) 
+            return res.status(400).json({ 
+                status: 'failed', message: 'Aggregation of post has failed'
+            });
+
+        return res.json(post);
+    });
+}
+
+exports.getLikesCount = (req, res) => {
+    Posts.aggregate([{ $group: { _id: '$author', numOfLikes: { $sum: "$likes" }}}]).exec((err, post) => {
+        if(err) 
+            return res.status(400).json({ 
+                status: 'failed', message: 'Aggregation of likes has failed'
+            });
+
+        return res.json(post);
+    });
+}
+
+exports.getUrls = (req, res) => {
+    Posts.aggregate([{ $group: { _id: '$author', url: { $push: "$url" }}}]).exec((err, post) => {
+        if(err) 
+            return res.status(400).json({ 
+                status: 'failed', message: 'Url fetch failed'
+            });
+
+        return res.json(post);
+    });
+}
+
+exports.getUniqueUrls = (req, res) => {
+    Posts.aggregate([{ $group: { _id: '$author', url: { $addToSet: "$url" }}}]).exec((err, post) => {
+        if(err) 
+            return res.status(400).json({ 
+                status: 'failed', message: 'Unique Url fetch failed'
+            });
+
+        return res.json(post);
+    });
+}
