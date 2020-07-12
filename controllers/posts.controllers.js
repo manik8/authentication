@@ -46,24 +46,13 @@ exports.createPost = (req, res) => {
 };
 
 exports.updatePost = (req, res) => {
-    Posts.findOneAndUpdate(
-        { _id: req.params.id }, 
-        {
-        $set: {
-            title: req.body.title
-        },
-        },
-        {
-            upsert: true,
-            new: true
-        }
-        ).exec((err,post) => {
-            if(err) 
+    const { title } = req.body;
+    Posts.findByIdAndUpdate({ _id: req.params.id }, { title }).exec((err, post) => {
+        if(err) 
             return res.status(400).json({ 
                 status: 'failed', message: 'Fetching posts from database failed'
             });
 
         return res.json(post);
-        }
-    );
+        });
 }
